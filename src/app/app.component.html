@@ -1,7 +1,7 @@
 <div class="verify-code">
   <p class="generatedcode">Code to copy: <span class="code">{{ codeToCopy }}</span></p>
 
-  <form [formGroup]="codeForm" class="codeform">
+  <form [formGroup]="codeForm" class="codeform" (ngSubmit)="verifyCode()">
     <div class="digitinputs">
       <input *ngFor="let _ of [].constructor(6); let i = index" #digitInputs class="digit" type="text"
         [formControlName]="'digit' + i" maxlength="1" pattern="\d" required (input)="focusNext($event, i)"

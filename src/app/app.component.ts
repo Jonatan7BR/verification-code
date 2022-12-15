@@ -57,9 +57,19 @@ export class AppComponent implements OnInit {
     for (let i = pasteStart, j = 0; i < pasteEnd; i++, j++) {
       this.codeForm.get(`digit${i}`)?.setValue(chars[j]);
     }
-    
+
     this.enableOrDisableInputs();
     this.digitInputs.get(pasteEnd - 1)?.nativeElement.focus();
+  }
+
+  verifyCode(): void {
+    const { digit0, digit1, digit2, digit3, digit4, digit5 } = this.codeForm.getRawValue();
+    const code = [digit0, digit1, digit2, digit3, digit4, digit5].join('');
+    if (code === this.codeToCopy) {
+      alert('Code is correct');
+    } else {
+      alert('Code is wrong');
+    }
   }
 
   private enableOrDisableInputs(): void {
