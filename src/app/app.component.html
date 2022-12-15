@@ -3,12 +3,9 @@
 
   <form [formGroup]="codeForm" class="codeform">
     <div class="digitinputs">
-      <input class="digit" type="text" formControlName="digit1" maxlength="1" pattern="\d" required />
-      <input class="digit" type="text" formControlName="digit2" maxlength="1" pattern="\d" required />
-      <input class="digit" type="text" formControlName="digit3" maxlength="1" pattern="\d" required />
-      <input class="digit" type="text" formControlName="digit4" maxlength="1" pattern="\d" required />
-      <input class="digit" type="text" formControlName="digit5" maxlength="1" pattern="\d" required />
-      <input class="digit" type="text" formControlName="digit6" maxlength="1" pattern="\d" required />
+      <input *ngFor="let _ of [].constructor(6); let i = index" #digitInputs class="digit" type="text"
+        [formControlName]="'digit' + i" maxlength="1" pattern="\d" required (input)="focusNext($event, i)"
+        (paste)="fillFromClipboard($event)" />
     </div>
 
     <button class="button" type="submit" [disabled]="codeForm.invalid">Verify code</button>
