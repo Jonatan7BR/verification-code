@@ -5,7 +5,7 @@
     <div class="digitinputs">
       <input *ngFor="let _ of [].constructor(6); let i = index" #digitInputs class="digit" type="text"
         [formControlName]="'digit' + i" maxlength="1" pattern="\d" required (input)="focusNext($event, i)"
-        (paste)="fillFromClipboard($event)" />
+        (paste)="fillFromClipboard($event, i)" />
     </div>
 
     <button class="button" type="submit" [disabled]="codeForm.invalid">Verify code</button>

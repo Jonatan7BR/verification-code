@@ -44,11 +44,22 @@ export class AppComponent implements OnInit {
     }
   }
 
-  fillFromClipboard(event: ClipboardEvent): void {
-    const pastedText = event.clipboardData?.getData('text');
-    if (!pastedText || !/\d{1,6}/.test(pastedText)) {
+  fillFromClipboard(event: ClipboardEvent, index: number): void {
+    const pastedText = event.clipboardData?.getData('text').trim();
+    if (!pastedText || !/^\d{1,6}$/.test(pastedText)) {
       return;
     }
+
+    const chars = [...pastedText];
+    const pasteStart = Math.min(index, 6 - chars.length);
+    const pasteEnd = pasteStart + Math.min(6, chars.length);
+
+    for (let i = pasteStart, j = 0; i < pasteEnd; i++, j++) {
+      this.codeForm.get(`digit${i}`)?.setValue(chars[j]);
+    }
+    
+    this.enableOrDisableInputs();
+    this.digitInputs.get(pasteEnd - 1)?.nativeElement.focus();
   }
 
   private enableOrDisableInputs(): void {

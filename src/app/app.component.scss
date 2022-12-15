@@ -27,11 +27,19 @@
                 font-size: 28pt;
                 width: 1em;
                 text-align: center;
+
+                &:disabled {
+                    cursor: not-allowed;
+                }
             }
         }
 
         >.button {
             font-size: 18pt;
+
+            &:disabled {
+                cursor: not-allowed;
+            }
         }
     }
 }
