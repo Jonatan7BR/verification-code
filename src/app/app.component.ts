@@ -1,6 +1,5 @@
-import { formatNumber } from '@angular/common';
 import { Component, ElementRef, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -25,16 +24,19 @@ export class AppComponent implements OnInit {
     ];
 
     this.codeForm = this.formBuilder.group({
-      digit0: new FormControl('', digitValidator),
-      digit1: new FormControl('', digitValidator),
-      digit2: new FormControl('', digitValidator),
-      digit3: new FormControl('', digitValidator),
-      digit4: new FormControl('', digitValidator),
-      digit5: new FormControl('', digitValidator)
+      digits: this.formBuilder.array(
+        Array.from({ length: 6 }, () => this.formBuilder.group({
+          digit: new FormControl('', digitValidator)
+        })
+      ))
     });
     this.enableOrDisableInputs();
 
     this.codeToCopy = `${Math.floor(Math.random() * 1e+6)}`.padStart(6, '0');
+  }
+
+  get digits(): FormArray {
+    return this.codeForm.get('digits') as FormArray;
   }
 
   focusNext(event: Event, index: number): void {
@@ -55,7 +57,7 @@ export class AppComponent implements OnInit {
     const pasteEnd = pasteStart + Math.min(6, chars.length);
 
     for (let i = pasteStart, j = 0; i < pasteEnd; i++, j++) {
-      this.codeForm.get(`digit${i}`)?.setValue(chars[j]);
+      this.digits.at(i).get('digit')?.setValue(chars[j]);
     }
 
     this.enableOrDisableInputs();
@@ -63,8 +65,7 @@ export class AppComponent implements OnInit {
   }
 
   verifyCode(): void {
-    const { digit0, digit1, digit2, digit3, digit4, digit5 } = this.codeForm.getRawValue();
-    const code = [digit0, digit1, digit2, digit3, digit4, digit5].join('');
+    const code = this.digits.getRawValue().map(d => d.digit).join('');
     if (code === this.codeToCopy) {
       alert('Code is correct');
     } else {
@@ -73,15 +74,15 @@ export class AppComponent implements OnInit {
   }
 
   private enableOrDisableInputs(): void {
-    Array.from({ length: 5 }, (_, i) => i + 1).forEach(i => {
-      const current = this.codeForm.get(`digit${i}`);
-      const previous = this.codeForm.get(`digit${i - 1}`);
+    for (let i = 1; i <= 5; i++) {
+      const current = this.digits.at(i).get('digit');
+      const previous = this.digits.at(i - 1).get('digit');
       if (previous?.value) {
         current?.enable();
       } else {
         current?.setValue('');
         current?.disable();
       }
-    });
+    }
   }
 }

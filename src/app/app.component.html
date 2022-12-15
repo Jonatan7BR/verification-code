@@ -2,10 +2,11 @@
   <p class="generatedcode">Code to copy: <span class="code">{{ codeToCopy }}</span></p>
 
   <form [formGroup]="codeForm" class="codeform" (ngSubmit)="verifyCode()">
-    <div class="digitinputs">
-      <input *ngFor="let _ of [].constructor(6); let i = index" #digitInputs class="digit" type="text"
-        [formControlName]="'digit' + i" maxlength="1" pattern="\d" required (input)="focusNext($event, i)"
-        (paste)="fillFromClipboard($event, i)" />
+    <div class="digitinputs" formArrayName="digits">
+      <ng-container *ngFor="let d of digits.controls; let i = index" [formGroupName]="i">
+        <input #digitInputs class="digit" type="text" formControlName="digit" maxlength="1" pattern="\d" required
+          (input)="focusNext($event, i)" (paste)="fillFromClipboard($event, i)" />
+      </ng-container>
     </div>
 
     <button class="button" type="submit" [disabled]="codeForm.invalid">Verify code</button>
